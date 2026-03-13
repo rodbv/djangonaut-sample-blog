@@ -2,6 +2,18 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
+
+
+def _unique_slug(model_class, source, slug_field="slug", max_length=50):
+    base = slugify(source)[:max_length]
+    slug = base
+    counter = 1
+    qs = model_class.objects
+    while qs.filter(**{slug_field: slug}).exists():
+        slug = f"{base}-{counter}"
+        counter += 1
+    return slug
 
 
 class TimestampedModel(models.Model):
@@ -16,12 +28,17 @@ class TimestampedModel(models.Model):
 class Blog(TimestampedModel):
     name = models.CharField(max_length=120)
     description = models.TextField()
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="blogs",
     )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = _unique_slug(Blog, self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -30,13 +47,18 @@ class Blog(TimestampedModel):
 class Post(TimestampedModel):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=300)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     content = models.TextField()
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="posts",
     )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = _unique_slug(Post, self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

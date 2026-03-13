@@ -5,6 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "django",
     "lorem>=0.1.1",
+    "tqdm>=4.67.3",
 ]
 
 [tool.uv.sources]
