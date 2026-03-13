@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
-from blog.models import Blog, Post
+from blog.models import Blog, Comment, Post
 
 User = get_user_model()
 
@@ -18,6 +18,13 @@ class Command(BaseCommand):
             type=int,
             default=5,
             help="Number of posts to create (default: 5)",
+        )
+        parser.add_argument(
+            "-c",
+            "--comments",
+            type=int,
+            default=0,
+            help="Number of comments to add per post (default: 0)",
         )
 
     def handle(self, *args, **options):
@@ -38,13 +45,21 @@ class Command(BaseCommand):
             )
             self.stdout.write(f"Created new blog: {blog.name}")
 
+        num_comments = options["comments"]
+
         # create posts with progress bar
         for _ in tqdm(range(quantity), desc="Creating posts"):
-            Post.objects.create(
+            post = Post.objects.create(
                 blog=blog,
                 title=lorem.sentence().rstrip(".")[:300],
                 content=lorem.text(),
                 created_by=user,
             )
+            for _ in range(num_comments):
+                Comment.objects.create(
+                    post=post,
+                    content=lorem.sentence(),
+                    created_by=user,
+                )
 
         self.stdout.write(self.style.SUCCESS(f"Created {quantity} posts in '{blog.name}'"))
