@@ -31,17 +31,22 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "6.0.3"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "../django" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/80/e1/894115c6bd70e2c8b66b0c40a3c367d83a5a48c034a4d904d31b62f7c53a/django-6.0.3.tar.gz", hash = "sha256:90be765ee756af8a6cbd6693e56452404b5ad15294f4d5e40c0a55a0f4870fe1", size = 10872701, upload-time = "2026-03-03T13:55:15.026Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/b1/23f2556967c45e34d3d3cf032eb1bd3ef925ee458667fb99052a0b3ea3a6/django-6.0.3-py3-none-any.whl", hash = "sha256:2e5974441491ddb34c3f13d5e7a9f97b07ba03bf70234c0a9c68b79bbb235bc3", size = 8358527, upload-time = "2026-03-03T13:55:10.552Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "argon2-cffi", marker = "extra == 'argon2'", specifier = ">=23.1.0" },
+    { name = "asgiref", specifier = ">=3.9.1" },
+    { name = "bcrypt", marker = "extra == 'bcrypt'", specifier = ">=4.1.1" },
+    { name = "sqlparse", specifier = ">=0.5.0" },
+    { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
+provides-extras = ["argon2", "bcrypt"]
 
 [[package]]
 name = "djangonaut-sample-blog"
@@ -60,7 +65,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "django", specifier = ">=5.2" },
+    { name = "django", editable = "../django" },
     { name = "lorem", specifier = ">=0.1.1" },
 ]
 

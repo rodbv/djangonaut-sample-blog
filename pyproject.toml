@@ -3,9 +3,12 @@ name = "djangonaut-sample-blog"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "django>=5.2",
+    "django",
     "lorem>=0.1.1",
 ]
+
+[tool.uv.sources]
+django = { path = "../django", editable = true }
 
 [dependency-groups]
 dev = [
