@@ -17,17 +17,23 @@ All models share a common `TimestampedModel` base with a UUID primary key and `c
 
 ## Running locally
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install django pre-commit ruff
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+```bash
+uv sync                        # creates .venv and installs all dependencies
+uv run python manage.py migrate
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
 ```
 
 Then open http://127.0.0.1:8000/admin.
+
+To add a new dependency:
+
+```bash
+uv add <package>               # adds to pyproject.toml and updates uv.lock
+uv add --dev <package>         # dev-only dependency
+```
 
 ## Code quality
 

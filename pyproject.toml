@@ -1,3 +1,18 @@
+[project]
+name = "djangonaut-sample-blog"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2",
+    "lorem>=0.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1",
+    "ruff>=0.9",
+]
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
