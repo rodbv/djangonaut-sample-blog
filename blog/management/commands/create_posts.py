@@ -1,3 +1,5 @@
+import random
+
 import lorem
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
@@ -24,7 +26,12 @@ class Command(BaseCommand):
             "--comments",
             type=int,
             default=0,
-            help="Number of comments to add per post (default: 0)",
+            help="Maximum number of comments per post; each post gets a random number from 1 to N (default: 0)",
+        )
+        parser.add_argument(
+            "--clean",
+            action="store_true",
+            help="Remove the first existing blog before creating posts",
         )
 
     def handle(self, *args, **options):
@@ -37,9 +44,15 @@ class Command(BaseCommand):
 
         # use first blog or create one if it doesn't exist
         blog = Blog.objects.first()
+        if options["clean"] and blog:
+            blog_name = blog.name
+            blog.delete()
+            self.stdout.write(f"Deleted existing blog: {blog_name}")
+            blog = None
+
         if not blog:
             blog = Blog.objects.create(
-                name=lorem.sentence().rstrip(".")[:120],
+                name="First Blog",
                 description=lorem.paragraph(),
                 created_by=user,
             )
@@ -55,11 +68,16 @@ class Command(BaseCommand):
                 content=lorem.text(),
                 created_by=user,
             )
-            for _ in range(num_comments):
+            comments_for_post = (
+                random.randint(1, num_comments) if num_comments > 0 else 0
+            )
+            for _ in range(comments_for_post):
                 Comment.objects.create(
                     post=post,
                     content=lorem.sentence(),
                     created_by=user,
                 )
 
-        self.stdout.write(self.style.SUCCESS(f"Created {quantity} posts in '{blog.name}'"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Created {quantity} posts in '{blog.name}'")
+        )

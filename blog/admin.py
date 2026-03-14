@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Blog, Comment, Post
+from .models import Blog, Comment, Invoice, Organization, Post
 
 
 @admin.register(Blog)
@@ -33,4 +33,19 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ("__str__", "post", "created_by", "created_at")
     list_filter = ("post__blog", "created_by")
     search_fields = ("content",)
+    readonly_fields = ("id", "created_at", "modified_at")
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ("name", "created_at")
+    search_fields = ("name",)
+    readonly_fields = ("id", "created_at", "modified_at")
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ("organization", "total", "issued_at", "created_at")
+    list_filter = ("organization", "issued_at")
+    search_fields = ("organization__name",)
     readonly_fields = ("id", "created_at", "modified_at")

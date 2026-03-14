@@ -6,6 +6,9 @@ run:
 migrate:
     uv run manage.py migrate
 
+shell:
+    uv run manage.py shell_plus --ipython
+
 mmm *args:
     uv run manage.py makemigrations {{args}}
     uv run manage.py migrate

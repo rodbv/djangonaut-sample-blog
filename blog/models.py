@@ -75,3 +75,23 @@ class Comment(TimestampedModel):
 
     def __str__(self):
         return f"Comment by {self.created_by} on {self.post}"
+
+
+class Organization(TimestampedModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+class Invoice(TimestampedModel):
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.PROTECT,
+        related_name="invoices",
+    )
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    issued_at = models.DateField()
+
+    def __str__(self):
+        return f"Invoice {self.id} for {self.organization}"
