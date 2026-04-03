@@ -3,13 +3,22 @@ from django.contrib import admin
 from .models import Blog, Comment, Invoice, Organization, Post
 
 
+class PostInline(admin.TabularInline):
+    model = Post
+    extra = 0
+    readonly_fields = ("id", "created_at", "modified_at")
+    delete_confirmation_max_display = 5
+
+
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
+    delete_confirmation_max_display = 10
     list_display = ("name", "slug", "created_by", "created_at")
     list_filter = ("created_by",)
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ("id", "created_at", "modified_at")
+    inlines = [PostInline]
 
 
 class CommentInline(admin.TabularInline):
