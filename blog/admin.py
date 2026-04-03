@@ -12,7 +12,7 @@ class PostInline(admin.TabularInline):
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
-    delete_confirmation_max_display = 10
+    delete_confirmation_max_display = 20
     list_display = ("name", "slug", "created_by", "created_at")
     list_filter = ("created_by",)
     search_fields = ("name", "slug")
